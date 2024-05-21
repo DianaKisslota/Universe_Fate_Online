@@ -1,20 +1,28 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public abstract class SectorData
 {
     public int X { get; }
     public int Y { get; }
-    public SectorData(int y, int x)
+    private string _prefix;
+    public string Prefix => _prefix;
+    public SectorData(string prefix, int x, int y)
     {
+        _prefix = prefix;
         X = x;
         Y = y;
     }
-    public static string CoordsToID(int x, int y)
+    public static string CoordsString(int x, int y)
     {
-        return  y.ToString().PadLeft(2, '0') + x.ToString().PadLeft(2, '0');
+        return x.ToString().PadLeft(2, '0') + y.ToString().PadLeft(2, '0');
     }
-    public string ID => CoordsToID(X, Y);
+
+    public static string CoordsToID(string prefix, int x, int y)
+    {
+        return prefix + CoordsString(x, y);
+    }
+    public string ID => CoordsToID(_prefix, X, Y);
+    public string Coords => CoordsString(X, Y);
 
     protected List<string> Monsters { get; } = new List<string>();
     protected List<string> NPC { get; } = new List<string>();

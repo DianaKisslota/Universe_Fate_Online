@@ -1,22 +1,24 @@
 using System;
+using System.Xml.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MapData : MonoBehaviour
+public abstract class MapData : MonoBehaviour
 {
     [SerializeField] protected Navigation _navigation;
     [SerializeField] protected Vector2 _startSector;
     [SerializeField] protected TMP_Text _sectorInfoText;
     protected SectorData _currentSector;
     protected IDataSource _source;
+    protected string Name {get; set;}
 
     private void Start()
     {       
         _source = new DataSource();
         var x = _startSector.x.ConvertTo<int>();
         var y = _startSector.y.ConvertTo<int>();
-        _currentSector = _source.GetSectorData(SectorData.CoordsToID(x, y));
+        _currentSector = _source.GetSectorData(SectorData.CoordsToID(Name, x, y));
         ReactToArriving();
         _navigation.ArriveToSector += OnArriveToSector;
     }
@@ -54,7 +56,7 @@ public class MapData : MonoBehaviour
 
         }
 
-        var nextSectorID = SectorData.CoordsToID(nextSectorX, nextSectorY);
+        var nextSectorID = SectorData.CoordsToID(Name, nextSectorX, nextSectorY);
         _currentSector = _source.GetSectorData(nextSectorID);
         Debug.Log("Прибыли в сектор " + _currentSector.ID);
         ReactToArriving();

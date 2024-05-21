@@ -1,6 +1,6 @@
 public class SectorMain0911 : SectorData
 {
-    public SectorMain0911(int x, int y) : base(x, y)
+    public SectorMain0911(int x, int y) : base("Main", x, y)
     {
     }
 }

@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class MainMapData : MapData
 {
-
-    // Update is called once per frame
-    void Update()
+    public MainMapData()
     {
-        
+        Name = "Main";
     }
 }
