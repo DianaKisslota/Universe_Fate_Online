@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using TMPro;
 using Unity.VisualScripting;
@@ -11,6 +12,7 @@ public abstract class MapData : MonoBehaviour
     [SerializeField] protected TMP_Text _sectorInfoText;
     protected SectorData _currentSector;
     protected IDataSource _source;
+    public event Action<List<string>> RefreshDirections;
     protected string Name {get; set;}
 
     private void Start()
@@ -21,6 +23,7 @@ public abstract class MapData : MonoBehaviour
         _currentSector = _source.GetSectorData(SectorData.CoordsToID(Name, x, y));
         ReactToArriving();
         _navigation.ArriveToSector += OnArriveToSector;
+        RefreshDirections += _navigation.UpdateButtons;
     }
     private void OnArriveToSector(string direction)
     {
@@ -60,6 +63,7 @@ public abstract class MapData : MonoBehaviour
         _currentSector = _source.GetSectorData(nextSectorID);
         Debug.Log("Прибыли в сектор " + _currentSector.ID);
         ReactToArriving();
+        CheckDirections();
     }
 
     private void ReactToArriving()
@@ -71,6 +75,36 @@ public abstract class MapData : MonoBehaviour
         var npc = _currentSector.GetNPCList();
         if (!string.IsNullOrEmpty(npc))
             _sectorInfoText.text += "Здесь находятся НПС: \n" + npc;
+    }
+
+    private bool isSectorAvailable(int x, int y)
+    {
+        var sector = _source.GetSectorData(SectorData.CoordsToID(Name, x, y));
+        return sector != null && !sector.IsRestricted();
+
+    }
+
+    private void CheckDirections()
+    {
+        var availableDirections = new List<string>();
+        if (isSectorAvailable(_currentSector.X, _currentSector.Y + 1))
+            availableDirections.Add("N");
+        if (isSectorAvailable(_currentSector.X, _currentSector.Y - 1))
+            availableDirections.Add("S");
+        if (isSectorAvailable(_currentSector.X - 1, _currentSector.Y))
+            availableDirections.Add("W");
+        if (isSectorAvailable(_currentSector.X + 1, _currentSector.Y))
+            availableDirections.Add("E");
+        if (isSectorAvailable(_currentSector.X - 1, _currentSector.Y + 1))
+            availableDirections.Add("NW");
+        if (isSectorAvailable(_currentSector.X + 1, _currentSector.Y + 1))
+            availableDirections.Add("NE");
+        if (isSectorAvailable(_currentSector.X + 1, _currentSector.Y - 1))
+            availableDirections.Add("SE");
+        if (isSectorAvailable(_currentSector.X - 1, _currentSector.Y - 1))
+            availableDirections.Add("SW");
+
+        RefreshDirections?.Invoke(availableDirections);
     }
 
 }

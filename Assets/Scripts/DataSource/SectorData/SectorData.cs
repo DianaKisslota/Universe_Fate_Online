@@ -6,6 +6,8 @@ public abstract class SectorData
     public int Y { get; }
     private string _prefix;
     public string Prefix => _prefix;
+
+    public bool IsRestricted() => false;
     public SectorData(string prefix, int x, int y)
     {
         _prefix = prefix;
@@ -55,4 +57,5 @@ public abstract class SectorData
         }
         return result;
     }
+
 }
