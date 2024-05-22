@@ -7,12 +7,12 @@ public class DataSource : IDataSource
     public DataSource()
     {
         AddSector(new SectorMain1110(11, 10));
-        AddSector(new SectorMain1110(12, 10));
-        AddSector(new SectorMain1110(12, 9));
+        AddSector(new SectorMain1210(12, 10));
+        AddSector(new SectorMain1209(12, 9));
         AddSector(new SectorMain1010(10, 10));
         AddSector(new SectorMain1009(10, 9));
         AddSector(new SectorMain0910(9, 10));
-        AddSector(new SectorMain0910(8, 10));
+        AddSector(new SectorMain0810(8, 10));
         AddSector(new SectorMain1011(10, 11));
         AddSector(new SectorMain1109(11, 9));
         AddSector(new SectorMain1111(11, 11));
