@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 public class DataSource : IDataSource
 {
-
     private Dictionary<string, SectorData> _sectors = new Dictionary<string, SectorData>();
     public DataSource()
     {
