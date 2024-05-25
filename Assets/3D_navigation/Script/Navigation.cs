@@ -17,6 +17,7 @@ public class Navigation : MonoBehaviour
     private Vector3 _targetPosition;
 
     public event Action<string> ArriveToSector;
+    public event Action<string> GoToSector;
 
     private string ButtonTag(Button button)
     {
@@ -50,7 +51,11 @@ public class Navigation : MonoBehaviour
         _directionsMap.Add(SouthEast, _directionsMap[South] + _directionsMap[East]);
 
         foreach (var item in _directionsMap)
-            item.Key.onClick.AddListener(() => _targetPosition += item.Value);
+            item.Key.onClick.AddListener(() =>
+            { 
+                _targetPosition += item.Value;
+                GoToSector?.Invoke(ButtonTag(item.Key));
+            });
 
         _targetPosition = transform.position;
     }

@@ -4,27 +4,50 @@ using System.Xml.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public abstract class MapData : MonoBehaviour
 {
     [SerializeField] protected Navigation _navigation;
     [SerializeField] protected Vector2 _startSector;
     [SerializeField] protected TMP_Text _sectorInfoText;
+    [SerializeField] protected Button _cleanupSectorButton;
+
     protected SectorData _currentSector;
     protected IDataSource _source;
     public event Action<List<string>> RefreshDirections;
+    
+    protected string SceneName { get; set; }
     protected string Name {get; set;}
 
     private void Start()
     {       
+        Global.CurrentMapName = SceneName;
         _source = new DataSource();
-        var x = _startSector.x.ConvertTo<int>();
-        var y = _startSector.y.ConvertTo<int>();
-        _currentSector = _source.GetSectorData(SectorData.CoordsToID(Name, x, y));
+        if (Global.CurrentSectorID == null)
+        {
+            var x = _startSector.x.ConvertTo<int>();
+            var y = _startSector.y.ConvertTo<int>();
+            _currentSector = _source.GetSectorData(SectorData.CoordsToID(Name, x, y));
+        }
+        else
+        {
+            _currentSector = _source.GetSectorData(Global.CurrentSectorID);
+            SetNavigationToSector(_currentSector);
+        }
+            
         ReactToArriving();
         _navigation.ArriveToSector += OnArriveToSector;
         RefreshDirections += _navigation.UpdateButtons;
+        _navigation.GoToSector += StartToGo;
     }
+
+    private void StartToGo(string direction)
+    {
+        _cleanupSectorButton.gameObject.SetActive(false);
+    }
+
     private void OnArriveToSector(string direction)
     {
         var nextSectorX = _currentSector.X;
@@ -71,10 +94,15 @@ public abstract class MapData : MonoBehaviour
         _sectorInfoText.text = "Сектор " + _currentSector.X.ToString() + ":" + _currentSector.Y.ToString() + "\n\n";
         var monsters = _currentSector.GetMonsterList();
         if (!string.IsNullOrEmpty(monsters))
+        {
             _sectorInfoText.text += "Здесь обитают монстры:\n" + monsters;
+            _cleanupSectorButton.gameObject.SetActive(true);
+        }
+
         var npc = _currentSector.GetNPCList();
         if (!string.IsNullOrEmpty(npc))
             _sectorInfoText.text += "Здесь находятся НПС: \n" + npc;
+        Global.CurrentSectorID = _currentSector.ID;
     }
 
     private bool isSectorAvailable(int x, int y)
@@ -105,6 +133,20 @@ public abstract class MapData : MonoBehaviour
             availableDirections.Add("SW");
 
         RefreshDirections?.Invoke(availableDirections);
+    }
+
+    private void SetNavigationToSector(SectorData sectorData)
+    {
+        var deltaX = sectorData.X - _startSector.x;
+        var deltaY = sectorData.Y - _startSector.y;
+        var newPosition = _navigation.gameObject.transform.position;
+        newPosition.x += deltaX * _navigation.XStep;
+        newPosition.z += deltaY * _navigation.ZStep;
+        _navigation.gameObject.transform.position = newPosition;
+    }
+    public void CleanupSector()
+    {
+        SceneManager.LoadScene("BattleScene");
     }
 
 }

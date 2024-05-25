@@ -7,5 +7,6 @@ public class MainMapData : MapData
     public MainMapData()
     {
         Name = "Main";
+        SceneName = "Global_map_01";
     }
 }
