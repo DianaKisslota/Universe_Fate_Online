@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class BattleRutine : MonoBehaviour
 {
     [SerializeField] List<Transform> _spawnPoints;
+    [SerializeField] Transform _character;
     private IDataSource _source;
     private SectorData _sectorData;
 
@@ -31,6 +32,7 @@ public class BattleRutine : MonoBehaviour
                 var spawnPoint = _spawnPoints[spawnPointIndex];
                 var avatar = AvatarFactory.CreateMob(spawner.EntityType);
                 avatar.transform.position = spawnPoint.position;
+                avatar.transform.LookAt(_character.transform);
                 _spawnPoints.Remove(spawnPoint);
             }
 

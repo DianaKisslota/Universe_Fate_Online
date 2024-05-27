@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum Animations
@@ -13,7 +11,6 @@ public enum Animations
 public class Avatar : MonoBehaviour
 {
     public BaseEntity Entity { get; set; }
-    //public GameObject Model {  get; set; }
     private Animator _animator;
 
     private void Start()
