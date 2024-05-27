@@ -26,12 +26,12 @@ public abstract class SectorData
     public string ID => CoordsToID(_prefix, X, Y);
     public string Coords => CoordsString(X, Y);
 
-    protected List<string> Monsters { get; } = new List<string>();
+    public List<EntitySpawner> Monsters { get; } = new List<EntitySpawner>();
     protected List<string> NPC { get; } = new List<string>();
 
-    public void AddMonster(string monster)
+    public void AddMonster(EntitySpawner spawner)
     {
-        Monsters.Add(monster);
+        Monsters.Add(spawner);
     }
 
     public void ADDNPC (string npc)
@@ -41,9 +41,9 @@ public abstract class SectorData
     public string GetMonsterList()
     {
         string result = string.Empty;
-        foreach (string monster in Monsters)
+        foreach (EntitySpawner monster in Monsters)
         {
-            result += monster + "\n";
+            result += monster.MonsterName + "\n";
         }
         return result;
     }
