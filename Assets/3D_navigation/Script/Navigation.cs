@@ -34,10 +34,7 @@ public class Navigation : MonoBehaviour
     private void Awake()
     {
         Buttons = new List<Button>() { North, South, West, East, NorthWest, NorthEast, SouthWest, SouthEast };
-    }
 
-    void Start()
-    {       
         _directionsMap = new Dictionary<Button, Vector3>();
 
         _directionsMap.Add(North, new Vector3(0, 0, ZStep));
@@ -52,11 +49,14 @@ public class Navigation : MonoBehaviour
 
         foreach (var item in _directionsMap)
             item.Key.onClick.AddListener(() =>
-            { 
+            {
                 _targetPosition += item.Value;
                 GoToSector?.Invoke(ButtonTag(item.Key));
-            });
+            });        
+    }
 
+    void Start()
+    {
         _targetPosition = transform.position;
     }
 

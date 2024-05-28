@@ -22,7 +22,10 @@ public abstract class MapData : MonoBehaviour
     protected string Name {get; set;}
 
     private void Start()
-    {       
+    {
+        _navigation.ArriveToSector += OnArriveToSector;
+        RefreshDirections += _navigation.UpdateButtons;
+        _navigation.GoToSector += StartToGo;
         Global.CurrentMapName = SceneName;
         _source = new DataSource();
         if (Global.CurrentSectorID == null)
@@ -30,26 +33,18 @@ public abstract class MapData : MonoBehaviour
             var x = _startSector.x.ConvertTo<int>();
             var y = _startSector.y.ConvertTo<int>();
             _currentSector = _source.GetSectorData(SectorData.CoordsToID(Name, x, y));
+            ReactToArriving();
         }
         else
         {
             _currentSector = _source.GetSectorData(Global.CurrentSectorID);
             SetNavigationToSector(_currentSector);
-        }
-            
-        ReactToArriving();
-        _navigation.ArriveToSector += OnArriveToSector;
-        RefreshDirections += _navigation.UpdateButtons;
-        _navigation.GoToSector += StartToGo;
+        }          
     }
 
     private void StartToGo(string direction)
     {
         _cleanupSectorButton.gameObject.SetActive(false);
-    }
-
-    private void OnArriveToSector(string direction)
-    {
         var nextSectorX = _currentSector.X;
         var nextSectorY = _currentSector.Y;
         switch (direction)
@@ -67,7 +62,8 @@ public abstract class MapData : MonoBehaviour
                 { nextSectorX++; }
                 break;
             case "NW":
-                { nextSectorY++; nextSectorX--;
+                {
+                    nextSectorY++; nextSectorX--;
                 }
                 break;
             case "NE":
@@ -82,11 +78,16 @@ public abstract class MapData : MonoBehaviour
 
         }
 
+        Debug.Log("Отправляемся в сектор " + _currentSector.ID);
         var nextSectorID = SectorData.CoordsToID(Name, nextSectorX, nextSectorY);
         _currentSector = _source.GetSectorData(nextSectorID);
-        Debug.Log("Прибыли в сектор " + _currentSector.ID);
+        _sectorInfoText.text = "Сектор " + _currentSector.X.ToString() + ":" + _currentSector.Y.ToString() + "\n\n";
+    }
+
+    private void OnArriveToSector(string direction)
+    {
+         Debug.Log("Прибыли в сектор " + _currentSector.ID);
         ReactToArriving();
-        CheckDirections();
     }
 
     private void ReactToArriving()
@@ -103,6 +104,7 @@ public abstract class MapData : MonoBehaviour
         if (!string.IsNullOrEmpty(npc))
             _sectorInfoText.text += "Здесь находятся НПС: \n" + npc;
         Global.CurrentSectorID = _currentSector.ID;
+        CheckDirections();
     }
 
     private bool isSectorAvailable(int x, int y)
@@ -143,6 +145,8 @@ public abstract class MapData : MonoBehaviour
         newPosition.x += deltaX * _navigation.XStep;
         newPosition.z += deltaY * _navigation.ZStep;
         _navigation.gameObject.transform.position = newPosition;
+        _currentSector = sectorData;
+        ReactToArriving();
     }
     public void CleanupSector()
     {

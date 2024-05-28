@@ -13,10 +13,6 @@ public class CooldownButton : MonoBehaviour
 
     private void Start()
     {
-        foreach (Button button in _navigation.Buttons)
-        {
-            button.interactable = true;
-        }
         cooldownText.text = "";
     }
 
