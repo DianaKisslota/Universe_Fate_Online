@@ -17,20 +17,20 @@ public class DataSource : IDataSource
         AddSector(new SectorMain1111(11, 11));
         AddSector(new SectorMain0911(9, 11));
         AddSector(new SectorMain0909(9, 9));
-        AddSector(new SectorMain0909(07, 10));
-        AddSector(new SectorMain0909(08, 11));
-        AddSector(new SectorMain0909(07, 11));
-        AddSector(new SectorMain0909(08, 09));
-        AddSector(new SectorMain1111(12, 11));
-        AddSector(new SectorMain1111(13, 11));
-        AddSector(new SectorMain1111(14, 11));
-        AddSector(new SectorMain1111(15, 12));
-        AddSector(new SectorMain1111(15, 13));
-        AddSector(new SectorMain1111(16, 12));
-        AddSector(new SectorMain1111(16, 13));
-        AddSector(new SectorMain1111(16, 14));
-        AddSector(new SectorMain1111(17, 14));
-        AddSector(new SectorMain1111(17, 13));
+        AddSector(new SectorMain0710(07, 10));
+        AddSector(new SectorMain0811(08, 11));
+        AddSector(new SectorMain0711(07, 11));
+        AddSector(new SectorMain0809(08, 09));
+        AddSector(new SectorMain1211(12, 11));
+        AddSector(new SectorMain1311(13, 11));
+        AddSector(new SectorMain1411(14, 11));
+        AddSector(new SectorMain1512(15, 12));
+        AddSector(new SectorMain1513(15, 13));
+        AddSector(new SectorMain1612(16, 12));
+        AddSector(new SectorMain1613(16, 13));
+        AddSector(new SectorMain1614(16, 14));
+        AddSector(new SectorMain1714(17, 14));
+        AddSector(new SectorMain1713(17, 13));
     }
     public SectorData GetSectorData(string sectorID)
     {
