@@ -29,6 +29,7 @@ public class DataSource : IDataSource
         AddSector(new SectorMain1612(16, 12));
         AddSector(new SectorMain1613(16, 13));
         AddSector(new SectorMain1614(16, 14));
+        AddSector(new SectorMain1514(15, 14));
         AddSector(new SectorMain1714(17, 14));
         AddSector(new SectorMain1713(17, 13));
     }
