@@ -19,6 +19,9 @@ public class BattleRutine : MonoBehaviour
     [SerializeField] private float _maxHeigh = 6;
     [SerializeField] private float _minHeigh = 1;
 
+    private float _rotationX;
+    private float _rotationY;
+
     private IDataSource _source;
     private SectorData _sectorData;
 
@@ -99,8 +102,13 @@ public class BattleRutine : MonoBehaviour
             _cameraHolder.Translate(Vector3.up * -wheelScroll);
         }
 
+        if (Input.GetMouseButton(1))
+        {
+            _rotationX += Input.GetAxis("Mouse X") * _cameraRotateSpeed * 5 * Time.deltaTime;
+            _rotationY += Input.GetAxis("Mouse Y") * _cameraRotateSpeed * 5 * Time.deltaTime;
 
-
+            _cameraHolder.localEulerAngles = new Vector3(-_rotationY, _rotationX, 0);
+        }
     }
     public void FinishBattle()
     {
