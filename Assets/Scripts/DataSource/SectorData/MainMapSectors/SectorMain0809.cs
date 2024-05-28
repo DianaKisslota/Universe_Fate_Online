@@ -1,18 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class SectorMain0809 : MonoBehaviour
+public class SectorMain0809 : SectorData
 {
-    // Start is called before the first frame update
-    void Start()
+    public SectorMain0809(int x, int y) : base("Main", x, y)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        AddMonster(new EntitySpawner(typeof(FeralDog), 1, 3));
     }
 }
