@@ -13,6 +13,7 @@ public abstract class MapData : MonoBehaviour
     [SerializeField] protected Vector2 _startSector;
     [SerializeField] protected TMP_Text _sectorInfoText;
     [SerializeField] protected Button _cleanupSectorButton;
+    [SerializeField] protected Camera _miniMapCamera;
 
     protected SectorData _currentSector;
     protected IDataSource _source;
@@ -40,6 +41,11 @@ public abstract class MapData : MonoBehaviour
             _currentSector = _source.GetSectorData(Global.CurrentSectorID);
             SetNavigationToSector(_currentSector);
         }          
+    }
+
+    private void Update()
+    {
+        _miniMapCamera.gameObject.SetActive(Input.GetKey(KeyCode.M));
     }
 
     private void StartToGo(string direction)
