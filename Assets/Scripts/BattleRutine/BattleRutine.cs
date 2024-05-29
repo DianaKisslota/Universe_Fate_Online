@@ -71,7 +71,6 @@ public class BattleRutine : MonoBehaviour
 
         //Vector3 forward = _cameraHolder.TransformDirection(Vector3.forward);
 
-
         var newPosition = _cameraHolder.position;
 
         if (Input.GetKey(KeyCode.A))
@@ -110,6 +109,12 @@ public class BattleRutine : MonoBehaviour
             _cameraHolder.localEulerAngles = new Vector3(-_rotationY, _rotationX, 0);
         }
     }
+
+    private void OnMouseOver()
+    {
+        
+    }
+
     public void FinishBattle()
     {
         SceneManager.LoadScene(Global.CurrentMapName);
