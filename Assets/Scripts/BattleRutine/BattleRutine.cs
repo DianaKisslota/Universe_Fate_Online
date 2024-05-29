@@ -12,11 +12,11 @@ public class BattleRutine : MonoBehaviour
 
     [SerializeField] private int _cameraScrollSpeed = 10;
     [SerializeField] private int _cameraRotateSpeed = 50;
-    [SerializeField] private float _frontFrontier = 1;
-    [SerializeField] private float _backFrontier = -7;
-    [SerializeField] private float _leftFrontier = -2;
+    [SerializeField] private float _frontFrontier = 17;
+    [SerializeField] private float _backFrontier = -17;
+    [SerializeField] private float _leftFrontier = -15;
     [SerializeField] private float _rightFrontier = 2.5f;
-    [SerializeField] private float _maxHeigh = 6;
+    [SerializeField] private float _maxHeigh = 20;
     [SerializeField] private float _minHeigh = 1;
 
     private float _rotationX;
@@ -98,7 +98,7 @@ public class BattleRutine : MonoBehaviour
 
         if (wheelScroll < 0 && _cameraHolder.position.y <= _maxHeigh || wheelScroll > 0 && _cameraHolder.position.y >= _minHeigh)
         {
-            _cameraHolder.Translate(Vector3.up * -wheelScroll);
+            _cameraHolder.Translate(Vector3.up * -wheelScroll * 3);
         }
 
         if (Input.GetMouseButton(1))

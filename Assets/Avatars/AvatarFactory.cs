@@ -7,11 +7,11 @@ using UnityEngine;
 
 public static class AvatarFactory
 {
-    public static Avatar CreateMob(Type entityType, GameObject parent = null)
+    public static EntityAvatar CreateMob(Type entityType, GameObject parent = null)
     {
         var modelPrefab = Global.GetPrefabForEntity(entityType);
         var model = GameObject.Instantiate<GameObject>(modelPrefab);
-        var avatar = model.AddComponent<Avatar>();
+        var avatar = model.AddComponent<EntityAvatar>();
         avatar.Entity = Activator.CreateInstance(entityType) as BaseEntity;
 
         return avatar;
