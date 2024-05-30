@@ -11,24 +11,12 @@ public enum PointerType
 
 public class PointerController : MonoBehaviour
 {
-    public GameObject nav;
-    public GameObject target;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] private GameObject _nav;
+    [SerializeField] private GameObject _target;
 
     public void SetPointerMaterial(Material material)
     {
-        foreach (var mesh in nav.GetComponentsInChildren<MeshRenderer>())
+        foreach (var mesh in _nav.GetComponentsInChildren<MeshRenderer>())
         {
             mesh.material = material;
         }
@@ -65,12 +53,12 @@ public class PointerController : MonoBehaviour
         switch (type)
         {
             case PointerType.Nav:
-                target.SetActive(false);
-                nav.SetActive(true);
+                _target.SetActive(false);
+                _nav.SetActive(true);
                 break;
             case PointerType.Target:
-                nav.SetActive(false);
-                target.SetActive(true);
+                _nav.SetActive(false);
+                _target.SetActive(true);
                 break;        
         }        
     }

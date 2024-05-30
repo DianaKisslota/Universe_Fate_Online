@@ -15,8 +15,13 @@ public static class Global
         return obj;
     }
 
+    public static GameObject NavPointPrefab { get; set; }
     static Global()
     {
         EntityPrefabs.Add(typeof(FeralDog), Resources.Load<GameObject>("EntityModels/Wolf_Animated/Prefabs/Wolf"));
-        EntityPrefabs.Add(typeof(Reptiloid), Resources.Load<GameObject>("EntityModels/Rake/Perfabs/Rake_A"));    }
+        EntityPrefabs.Add(typeof(Reptiloid), Resources.Load<GameObject>("EntityModels/Rake/Perfabs/Rake_A"));
+
+        NavPointPrefab = Resources.Load<GameObject>("ControlPrefabs/Nav");
+    }
+        
 }
