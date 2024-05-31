@@ -4385,6 +4385,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass model lowpoly 1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 386c34152d84d6144987e89e8c217c18, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4931228026934343265, guid: 386c34152d84d6144987e89e8c217c18, type: 3}
       propertyPath: m_LocalScale.x
       value: 13.37718
