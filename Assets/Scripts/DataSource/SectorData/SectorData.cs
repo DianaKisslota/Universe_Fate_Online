@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public abstract class SectorData
@@ -27,7 +28,13 @@ public abstract class SectorData
     public string Coords => CoordsString(X, Y);
 
     public List<EntitySpawner> Monsters { get; } = new List<EntitySpawner>();
+    public List<ItemSpawner> Items { get; } = new List<ItemSpawner> ();
     protected List<string> NPC { get; } = new List<string>();
+
+    public void AddItem(Type itemType)
+    {
+        Items.Add(new ItemSpawner(itemType));
+    }
 
     public void AddMonster(EntitySpawner spawner)
     {

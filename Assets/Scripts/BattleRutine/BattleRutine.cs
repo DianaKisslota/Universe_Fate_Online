@@ -29,7 +29,17 @@ public class BattleRutine : MonoBehaviour
     {
         _source = new DataSource();
         _sectorData = _source.GetSectorData(Global.CurrentSectorID);
-        foreach (EntitySpawner spawner in _sectorData.Monsters)
+
+        foreach (ItemSpawner spawner in _sectorData.Items)
+        {
+            var spawnPointIndex = Random.Range(0, _spawnPoints.Count);
+            var spawnPoint = _spawnPoints[spawnPointIndex];
+            var item = ItemFactory.CreateItem(spawner.ItemType);
+            item.transform.position = spawnPoint.position;
+            _spawnPoints.Remove(spawnPoint);
+        }
+
+            foreach (EntitySpawner spawner in _sectorData.Monsters)
         {
             if (_spawnPoints.Count == 0)
                 break;

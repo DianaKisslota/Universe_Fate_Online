@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public abstract class Character : BaseEntity
 {
     public string ClassName {  get; set; }
@@ -7,4 +9,6 @@ public abstract class Character : BaseEntity
         get { return _expirience; }
         set { _expirience = value; }
     }
+
+    public List<Skill> Skills { get; set; } = new List<Skill>();
 }
