@@ -19,6 +19,7 @@ public class CharacterController : AvatarController
 
     private Vector3 _lastPoint;
     private Vector3 _lastAngle;
+
     private CharacterAvatar _playerAvatar => _avatar as CharacterAvatar;
 
     private List<GameObject> _navPoints = new List<GameObject>();
@@ -50,7 +51,7 @@ public class CharacterController : AvatarController
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && _canMove && !AvatarBusy)
+        if (Input.GetMouseButtonDown(0) && _canMove && PlayerCanReach(AllignPoint.ToMid(_pointer.position)) && !AvatarBusy)
         {
             var navPoint = Instantiate(Global.NavPointPrefab);
             navPoint.transform.position = _pointer.position;
@@ -155,6 +156,8 @@ public class CharacterController : AvatarController
 
     private void ClearAllNavPoints()
     {
+        if (AvatarBusy)
+            return;
         foreach (var point in _navPoints)
         {
             Destroy(point);
@@ -168,11 +171,15 @@ public class CharacterController : AvatarController
 
     public void ButtonApplyQuantsClick()
     {
+        if (AvatarBusy)
+            return;
         ApplyQuants();
     }
 
     public void ButtonClearLastClick()
     {
+        if (AvatarBusy)
+            return;
         ClearLastNavPoint();
     }
 

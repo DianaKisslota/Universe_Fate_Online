@@ -3,14 +3,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using static UnityEngine.EventSystems.EventTrigger;
 
-public enum Animations
-{
-    Idle,
-    Move,
-    MeleeAttack,
-    DistanceAttack,
-    Diyng
-}
 public class EntityAvatar : MonoBehaviour
 {
     public BaseEntity Entity { get; set; }

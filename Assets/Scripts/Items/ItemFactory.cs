@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AI;
 
 public static class ItemFactory
 {
@@ -14,6 +9,10 @@ public static class ItemFactory
         var model = GameObject.Instantiate<GameObject>(modelPrefab);
         var itemObject = model.AddComponent<ItemObject>();
         model.AddComponent<Rigidbody>();
+        //var light = model.AddComponent<Light>();
+        //light.intensity = 10;
+        //light.range = 2;
+        //light.color = new Color(19, 87, 3);
         var item = Activator.CreateInstance(itemType) as Item;
         itemObject.Item = item;
 

@@ -6,12 +6,23 @@ using UnityEngine.AI;
 
 public class CharacterAvatar : EntityAvatar
 {
+    [SerializeField] Transform _weaponPoint;
+    [SerializeField] Transform _weaponBackPoint;
     private List<Quant> _quants = new List<Quant>();
 
     public event Action StartApplainQuants;
     public event Action EndApplainQuants;
 
     private bool _quantsApplaying = false;
+
+    public void ClickToItem(ItemObject item)
+    {
+        item.SetKinematic(true);
+        item.gameObject.transform.parent = _weaponBackPoint;
+        item.gameObject.transform.localPosition = Vector3.zero;
+        item.gameObject.transform.localRotation = Quaternion.identity;
+        item.Take(); 
+    }
 
     public void AddQuant(EntityAction action, object _object)
     {
