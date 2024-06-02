@@ -12,12 +12,14 @@ public class Quant
     public object Object {  get; private set; }
 
     public Vector3? LastPosition {  get; private set; }
+    public Quaternion LastRotation { get; private set; }
 
-    public Quant(EntityAction _action, object _object, Vector3? _lastPosition)
+    public Quant(EntityAction _action, object _object, Vector3? _lastPosition, Quaternion lastRotation)
     {
         Action = _action;
         Object = _object;
         LastPosition = _lastPosition;
+        LastRotation = lastRotation;
     }
 
     public Vector3? GetPosition()

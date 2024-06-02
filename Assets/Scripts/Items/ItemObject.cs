@@ -19,6 +19,12 @@ public class ItemObject : MonoBehaviour
         _light.enabled = false;
     }
 
+    public void Drop()
+    {
+        _isFree = true;
+        SetKinematic(false);
+    }
+
     public void Take()
     {
         _isFree = false;

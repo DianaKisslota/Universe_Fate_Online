@@ -71,6 +71,7 @@ public class CharacterController : AvatarController
             var itemObject = GetItemUnderMousePoint();
             if (itemObject != null)
             {
+                _playerAvatar.AddPickObjectQuant(itemObject);
                 _playerAvatar.TakeItem(itemObject);
                 return;
             }
@@ -168,24 +169,13 @@ public class CharacterController : AvatarController
 
     private void ApplyQuants()
     {
-        foreach (var point in _navPoints)
-        {
-            Destroy(point);
-        }
-        _navPoints.Clear();
-        _playerAvatar.transform.position = _originPoint;
-        _playerAvatar.transform.eulerAngles = _originAngle;
-
+        RevertAllQuants();
         _playerAvatar.ApplyQuants();
     }
 
-    private void ClearLastQuant()
+    private void RevertQuant(Quant quant)
     {
-        if (_playerAvatar.Quants.Count == 0)
-            return;
-        var lastQuant = _playerAvatar.Quants[_playerAvatar.Quants.Count - 1];
-
-        switch (lastQuant.Action)
+        switch (quant.Action)
         {
             case EntityAction.Move:
                 {
@@ -194,47 +184,60 @@ public class CharacterController : AvatarController
                         Destroy(_navPoints[_navPoints.Count - 1]);
                         _navPoints.RemoveAt(_navPoints.Count - 1);
                     }
-                    if (lastQuant.LastPosition != null)
+                    if (quant.LastPosition != null)
                     {
-                        _playerAvatar.SetToPosition(lastQuant.LastPosition.Value);
+                        _playerAvatar.SetToPosition(quant.LastPosition.Value);
+                        _playerAvatar.transform.rotation = quant.LastRotation;
                     }
-                    else
-                        _playerAvatar.SetToPosition(_originPoint);
+                    break;
+                }
+            case EntityAction.PickObject:
+                {
+                    var itemObject = quant.Object as ItemObject;
+                    itemObject.transform.SetParent(null);
+                    itemObject.transform.position = quant.LastPosition.Value;
+                    itemObject.transform.rotation = quant.LastRotation;
+                    itemObject.Drop();
                     break;
                 }
         }
-
-        _playerAvatar.RemoveLastQuant();
-
-
-        //if (_navPoints.Count == 0)
-        //{
-        //    _playerAvatar.SetToPosition(_originPoint);
-        //    _playerAvatar.transform.eulerAngles -= _originAngle;
-        //}
-        //else
-        //{
-        //    _playerAvatar.SetToPosition(_navPoints[_navPoints.Count - 1].transform.position);
-        //    //_playerAvatar.transform.eulerAngles = _lastAngle;
-        //    //_lastPoint = _navPoints[_navPoints.Count - 1].transform.position;
-        //}
-
-
     }
 
-    private void ClearAllNavPoints()
+    private void RevertLastQuant()
+    {
+        if (_playerAvatar.Quants.Count > 0)
+            RevertQuant(_playerAvatar.Quants.Last());
+    }
+
+    private void RevertAllQuants()
     {
         if (AvatarBusy)
             return;
-        foreach (var point in _navPoints)
+        _playerAvatar.Quants.Reverse();
+        foreach (var quant in _playerAvatar.Quants) 
         {
-            Destroy(point);
+            RevertQuant(quant);
         }
-        _navPoints.Clear();
+        _playerAvatar.Quants.Reverse();
+    }
 
-        _playerAvatar.RemoveAllQuants();
-        _playerAvatar.SetToPosition(_originPoint);
-        _playerAvatar.transform.eulerAngles -= _originAngle;
+    private void ClearLastQuant()
+    {
+        if (AvatarBusy)
+            return;
+        RevertLastQuant();
+        _playerAvatar.RemoveLastQuant();
+    }
+
+    private void ClearAllQuants()
+    {
+        if (AvatarBusy)
+            return;
+        do
+        {
+            ClearLastQuant();
+        }
+        while (_playerAvatar.Quants.Any());
     }
 
     public void ButtonApplyQuantsClick()
@@ -253,7 +256,7 @@ public class CharacterController : AvatarController
 
     public void ButtonClearAllNavPoints()
     {
-        ClearAllNavPoints();
+        ClearAllQuants();
     }
 
 }

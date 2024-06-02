@@ -35,19 +35,25 @@ public class CharacterAvatar : EntityAvatar
         }
     }
 
-    public void AddQuant(EntityAction action, object _object, Vector3? lastPosition)
+    public void AddQuant(EntityAction action, object _object, Vector3? lastPosition, Quaternion lastRotation)
     {
-        _quants.Add(new Quant(action, _object, lastPosition));
+        _quants.Add(new Quant(action, _object, lastPosition, lastRotation));
     }
 
     public void AddMoveQuant(Vector3 point)
     {
-        AddQuant(EntityAction.Move, point, transform.position);
+        AddQuant(EntityAction.Move, point, transform.position, transform.rotation);
+    }
+
+    public void AddPickObjectQuant(ItemObject itemObject)
+    {
+        AddQuant(EntityAction.PickObject, itemObject, itemObject.transform.position, itemObject.transform.rotation);
     }
 
     public void RemoveLastQuant()
     {
-        _quants.RemoveAt(_quants.Count - 1);
+        if (_quants.Count > 0)
+            _quants.RemoveAt(_quants.Count - 1);
     }
 
     public void RemoveAllQuants()
@@ -63,6 +69,9 @@ public class CharacterAvatar : EntityAvatar
         {
             case EntityAction.Move:
                 MoveTo((_quants[0].Object as Vector3?).Value);
+                break;
+            case EntityAction.PickObject:
+                TakeItem(_quants[0].Object as ItemObject);
                 break;
             default:
                 Debug.LogError("Неизвестный тип действия");
@@ -105,6 +114,13 @@ public class CharacterAvatar : EntityAvatar
                 case EntityAction.Move:
                     {
                         quantEnded = _walkingTo == null;
+                    }
+                    break;
+                case EntityAction.PickObject:
+                    {
+                        var itemObject = _quants[0].Object as ItemObject;
+                        TakeItem(itemObject);
+                        quantEnded = true;
                     }
                     break;
                 default:
