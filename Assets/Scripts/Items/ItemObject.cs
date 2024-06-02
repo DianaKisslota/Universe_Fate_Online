@@ -11,7 +11,6 @@ public class ItemObject : MonoBehaviour
 
     private bool _isFree  = true;
 
-    public event Action<ItemObject> OnItemClick;
 
     private void Start()
     {
@@ -23,8 +22,8 @@ public class ItemObject : MonoBehaviour
     public void Take()
     {
         _isFree = false;
-        OnItemClick = null;
         LightOff();
+        SetKinematic(true);
     }
 
     public void SetKinematic(bool kinematic)
@@ -38,35 +37,13 @@ public class ItemObject : MonoBehaviour
     }
     private void OnMouseOver()
     {
-        //_light.enabled = true;
+        if (_isFree) 
+            _light.enabled = true;
     }
 
     private void OnMouseExit()
     {
-       // _light.enabled = false;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent<CharacterAvatar>(out var character) && _isFree)
-        {
-            _light.enabled = true;
-            OnItemClick += character.ClickToItem;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent<CharacterAvatar>(out var character) && _isFree)
-        {
+        if (_isFree)
             _light.enabled = false;
-            OnItemClick -= character.ClickToItem;
-        }
     }
-
-    private void OnMouseDown()
-    {
-        OnItemClick?.Invoke(this);
-    }
-
 }

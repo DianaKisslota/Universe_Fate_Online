@@ -12,13 +12,17 @@ public class CharacterController : AvatarController
     [SerializeField] private Material RestrictMoveMaterial;
 
     [SerializeField] private PointerController _pointer;
- //   [SerializeField] protected LineRenderer _pathDrawer;
+    //   [SerializeField] protected LineRenderer _pathDrawer;
+
+    [SerializeField] private List<UIItem> _uiItems;
 
     private Vector3 _originPoint;
     private Vector3 _originAngle;
 
     private Vector3 _lastPoint;
     private Vector3 _lastAngle;
+
+    private bool _mouseOverUI;
 
     private CharacterAvatar _playerAvatar => _avatar as CharacterAvatar;
 
@@ -47,11 +51,30 @@ public class CharacterController : AvatarController
         _originAngle = _playerAvatar.transform.eulerAngles;
         _lastPoint = _playerAvatar.transform.position;
         _lastAngle = _playerAvatar.transform.eulerAngles;
+
+        foreach(var item in _uiItems)
+        {
+            item.MouseOver += UIMouseInteract;
+        }
+    }
+
+    public void UIMouseInteract(bool mouseOverUI)
+    {
+        _mouseOverUI = mouseOverUI;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && _canMove && PlayerCanReach(AllignPoint.ToMid(_pointer.position)) && !AvatarBusy)
+        if (Input.GetMouseButtonDown(0))
+        {
+            var itemObject = GetItemUnderMousePoint();
+            if (itemObject != null)
+            {
+                _playerAvatar.ClickToItem(itemObject);
+                return;
+            }
+        }
+        if (Input.GetMouseButtonDown(0) && !_mouseOverUI && _canMove && PlayerCanReach(AllignPoint.ToMid(GetPointerPositionOnMap())) && !AvatarBusy)
         {
             var navPoint = Instantiate(Global.NavPointPrefab);
             navPoint.transform.position = _pointer.position;
@@ -74,19 +97,41 @@ public class CharacterController : AvatarController
         {
             ApplyQuants();
         }
+
+        if (Input.GetKey(KeyCode.Backspace)) 
+        { 
+            ClearLastNavPoint();
+        }
+    }
+
+    private Vector3 GetPointerPositionOnMap() 
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        Physics.Raycast(ray, out hit);
+        return hit.point;
+    }
+
+    private ItemObject GetItemUnderMousePoint()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        Physics.Raycast(ray, out hit);
+        if (hit.rigidbody != null && hit.rigidbody.gameObject.TryGetComponent<ItemObject>(out var itemObject))
+        {
+            return itemObject;
+        }
+        return null;
     }
 
     private void OnMouseOver()
     {
         if (_pointer != null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            Physics.Raycast(ray, out hit);
-            var pointerPosition = hit.point;
+            var pointerPosition = GetPointerPositionOnMap();
             var movePosition = AllignPoint.ToMid(pointerPosition);
 
-            _canMove = PlayerCanReach(movePosition);
+            _canMove = PlayerCanReach(movePosition) && !_mouseOverUI;
             _pointer.SetActive(_canMove && !AvatarBusy);
             if (_pointer.activeSelf && _pointer.position != movePosition)
             {

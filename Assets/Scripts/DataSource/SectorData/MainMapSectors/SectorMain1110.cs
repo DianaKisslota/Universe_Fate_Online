@@ -4,5 +4,6 @@ public class SectorMain1110 : SectorData
     {
         AddMonster(new EntitySpawner(typeof(FeralDog), 1, 3));
         AddItem(typeof(AK47));
+        AddItem(typeof(PM));
     }
 }

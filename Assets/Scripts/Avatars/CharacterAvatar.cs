@@ -15,13 +15,21 @@ public class CharacterAvatar : EntityAvatar
 
     private bool _quantsApplaying = false;
 
-    public void ClickToItem(ItemObject item)
+    public void ClickToItem(ItemObject itemObject)
     {
-        item.SetKinematic(true);
-        item.gameObject.transform.parent = _weaponBackPoint;
-        item.gameObject.transform.localPosition = Vector3.zero;
-        item.gameObject.transform.localRotation = Quaternion.identity;
-        item.Take(); 
+        if (Vector3.Distance(transform.position, itemObject.transform.position) < 1.2f)
+        {
+            if (itemObject.Item is Weapon)
+            {
+                if ((itemObject.Item as Weapon).WeaponType == WeaponType.Rifle || (itemObject.Item as Weapon).WeaponType == WeaponType.AssaultRifle)
+                    itemObject.gameObject.transform.parent = _weaponBackPoint;
+                else
+                    itemObject.gameObject.transform.parent = _weaponPoint;
+                itemObject.gameObject.transform.localPosition = Vector3.zero;
+                itemObject.gameObject.transform.localRotation = Quaternion.identity;
+            }
+            itemObject.Take();
+        }
     }
 
     public void AddQuant(EntityAction action, object _object)
