@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -70,7 +71,7 @@ public class CharacterController : AvatarController
             var itemObject = GetItemUnderMousePoint();
             if (itemObject != null)
             {
-                _playerAvatar.ClickToItem(itemObject);
+                _playerAvatar.TakeItem(itemObject);
                 return;
             }
         }
@@ -88,8 +89,8 @@ public class CharacterController : AvatarController
             if (_playerAvatar.CalculateCompletePath(_pointer.position, path))
             {
                 //DrawPath(path);
-                _playerAvatar.MoveTo(_pointer.position);
                 _playerAvatar.AddMoveQuant(_pointer.position);
+                _playerAvatar.MoveTo(_pointer.position);
             }
         }
 
@@ -100,7 +101,7 @@ public class CharacterController : AvatarController
 
         if (Input.GetKey(KeyCode.Backspace)) 
         { 
-            ClearLastNavPoint();
+            ClearLastQuant();
         }
     }
 
@@ -178,24 +179,46 @@ public class CharacterController : AvatarController
         _playerAvatar.ApplyQuants();
     }
 
-    private void ClearLastNavPoint()
+    private void ClearLastQuant()
     {
-        if (_navPoints.Count == 0)
+        if (_playerAvatar.Quants.Count == 0)
             return;
-        Destroy(_navPoints[_navPoints.Count - 1]);
-        _navPoints.RemoveAt(_navPoints.Count - 1);
+        var lastQuant = _playerAvatar.Quants[_playerAvatar.Quants.Count - 1];
+
+        switch (lastQuant.Action)
+        {
+            case EntityAction.Move:
+                {
+                    if (_navPoints.Count > 0)
+                    {
+                        Destroy(_navPoints[_navPoints.Count - 1]);
+                        _navPoints.RemoveAt(_navPoints.Count - 1);
+                    }
+                    if (lastQuant.LastPosition != null)
+                    {
+                        _playerAvatar.SetToPosition(lastQuant.LastPosition.Value);
+                    }
+                    else
+                        _playerAvatar.SetToPosition(_originPoint);
+                    break;
+                }
+        }
+
         _playerAvatar.RemoveLastQuant();
-        if (_navPoints.Count == 0)
-        {
-            _playerAvatar.SetToPosition(_originPoint);
-            _playerAvatar.transform.eulerAngles -= _originAngle;
-        }
-        else
-        {
-            _playerAvatar.SetToPosition(_navPoints[_navPoints.Count - 1].transform.position);
-            //_playerAvatar.transform.eulerAngles = _lastAngle;
-            //_lastPoint = _navPoints[_navPoints.Count - 1].transform.position;
-        }
+
+
+        //if (_navPoints.Count == 0)
+        //{
+        //    _playerAvatar.SetToPosition(_originPoint);
+        //    _playerAvatar.transform.eulerAngles -= _originAngle;
+        //}
+        //else
+        //{
+        //    _playerAvatar.SetToPosition(_navPoints[_navPoints.Count - 1].transform.position);
+        //    //_playerAvatar.transform.eulerAngles = _lastAngle;
+        //    //_lastPoint = _navPoints[_navPoints.Count - 1].transform.position;
+        //}
+
 
     }
 
@@ -225,7 +248,7 @@ public class CharacterController : AvatarController
     {
         if (AvatarBusy)
             return;
-        ClearLastNavPoint();
+        ClearLastQuant();
     }
 
     public void ButtonClearAllNavPoints()
